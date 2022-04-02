@@ -1,39 +1,53 @@
 import { useEffect, useState } from "react";
+import urlcat from "urlcat";
 import { BACKEND } from "../utils/utils";
 
-export default function HolidayList() {
-    const [holidays, setHolidays] = useState([]);
+const url = urlcat(`${BACKEND}/api/holidays`);
 
-    useEffect(() => {
-        fetch(`${BACKEND}/api/holidays/seed`)
-            .then((response) => response.json())
-            .then((data) => setHolidays(data));
-    }, []);
+function HolidayList() {
+  const [holidays, setHolidays] = useState([]);
 
-    const handleDelete = (id) => {
-        const url = `${BACKEND}/api/holidays/${id}`
-        fetch(url, { method: "DELETE" })
-            .then((response) => response.json())
-            .then((data) => setHolidays(data));
-    }
+  useEffect(() => {
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => setHolidays(data));
+  }, []);
 
-    return (
-        <>
-            <table>
-                <tbody>
-                    {holidays.map((holiday) => {
-                        return (
-                            <tr key={holiday._id}>
-                                <td>
-                                    <a href='#'>{holiday.name}</a>
-                                    <button onClick={handleDelete(holiday._id)}>Delete</button>
-                                </td>
-                                
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
-        </>
-    )
+  const handleDelete = (id) => () => {
+    fetch(url, { method: "DELETE" })
+      .then((response) => response.json())
+      .then((data) => console.log(data));
+  };
+
+  const handleUpdate = (holiday) => () => {
+    const url = urlcat(BACKEND, `/api/holidays/${holiday._id}`);
+    const newHoliday = { ...holiday, likes: holiday.likes + 10 }
+    
+    fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newHoliday),
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data));
+  };
+
+  return (
+    <>
+      <ul>
+        {holidays.map((holiday) => (
+          <li key={holiday._id}>
+            {holiday.name} --{" "}
+            <span onClick={handleUpdate(holiday)}>{holiday.likes}</span>
+            --
+            <span onClick={handleDelete(holiday._id)}>Delete</span>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
 }
+
+export default HolidayList;
