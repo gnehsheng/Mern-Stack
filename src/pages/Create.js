@@ -1,6 +1,5 @@
 import { useState } from "react";
-
-const BACKEND = process.env.REACT_APP_BACKEND ?? 'http://localhost:2000'
+import { BACKEND } from "../utils/utils";
 
 export default function Create() {
     const [name, setName] = useState("");
@@ -20,7 +19,7 @@ export default function Create() {
                 if (data.error) {
                     setError(data.error)
                 }
-            });
+            }).catch(error => console.log(error))
     };
 
     const handleSubmit = (event) => {
