@@ -14,16 +14,17 @@ function HolidayList() {
   }, []);
 
   const handleDelete = (id) => () => {
-    fetch(url, { method: "DELETE" })
+    const url2 = urlcat(`${BACKEND}/api/holidays/${id}`)
+    fetch(url2, { method: "DELETE" })
       .then((response) => response.json())
       .then((data) => console.log(data));
   };
 
   const handleUpdate = (holiday) => () => {
-    const url = urlcat(BACKEND, `/api/holidays/${holiday._id}`);
+    const url3 = urlcat(`${BACKEND}/api/holidays/${holiday._id}`);
     const newHoliday = { ...holiday, likes: holiday.likes + 10 }
     
-    fetch(url, {
+    fetch(url3, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
