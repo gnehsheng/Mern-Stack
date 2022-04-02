@@ -27,8 +27,8 @@ export default function HolidayList() {
                             <tr key={holiday.id}>
                                 <td>
                                     <a href='#'>{holiday.name}</a> <br/>
-                                    <td onClick={() => deleteHoliday(holiday._id)}>Delete</td>
                                 </td>
+                                <td onClick={() => deleteHoliday(holiday._id)}>Delete</td>
                             </tr>
                         );
                     })}
