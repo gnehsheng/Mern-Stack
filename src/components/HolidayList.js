@@ -4,19 +4,18 @@ import { BACKEND } from "../utils/utils";
 export default function HolidayList() {
     const [holidays, setHolidays] = useState([]);
 
-    const deleteHoliday = (id) => {
-        fetch("/holidays/" + id, {
-          method: "DELETE",
-        }).then((response) => {
-          setHolidays(holidays.filter((day) => day._id !== id));
-        });
-      };
-
     useEffect(() => {
         fetch(`${BACKEND}/api/holidays/seed`)
             .then((response) => response.json())
             .then((data) => setHolidays(data));
     }, []);
+
+    const handleDelete = (id) => {
+        const url = `${BACKEND}/api/holidays/${id}`
+        fetch(url, { method: "DELETE" })
+            .then((response) => response.json())
+            .then((data) => setHolidays(data));
+    }
 
     return (
         <>
@@ -24,11 +23,12 @@ export default function HolidayList() {
                 <tbody>
                     {holidays.map((holiday) => {
                         return (
-                            <tr key={holiday.id}>
+                            <tr key={holiday._id}>
                                 <td>
-                                    <a href='#'>{holiday.name}</a> <br/>
+                                    <a href='#'>{holiday.name}</a>
+                                    <button onClick={handleDelete(holiday._id)}>Delete</button>
                                 </td>
-                                <td onClick={() => deleteHoliday(holiday._id)}>Delete</td>
+                                
                             </tr>
                         );
                     })}
